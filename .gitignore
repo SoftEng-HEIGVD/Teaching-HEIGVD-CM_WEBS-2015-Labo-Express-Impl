@@ -1,0 +1,8 @@
+.idea/
+node_modules/
+bower_components/
+public/components
+npm-debug.log
+apidoc/raml.json
+apidoc/build
+target/

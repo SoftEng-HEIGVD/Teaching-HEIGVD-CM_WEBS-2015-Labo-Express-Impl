@@ -1,0 +1,99 @@
+# Smart City - Citizen Engagement - A pratical work for Web Services
+
+## Introduction
+
+The implementation is done with:
+
+- [Express](http://expressjs.com/)
+- [Node.js](http://nodejs.org/)
+- [Mongoose](mongoosejs.com)
+- [MongoDB](http://www.mongodb.org/)
+
+## Requirements
+
+- Nodejs 0.10+
+- NPM 2.4+
+- Bower 1.3+
+- Mongo 2.6+
+
+## Implementation
+
+The current implementation is based on the info from [iFlux blog's post](http://www.iflux.io/use-case/2015/02/03/citizen-engagement.html).
+
+## Install / Deploy / Run
+
+Just run the following command. Be sure MongoDB is running before running the command.
+
+```bash
+# Run only once the command to install the app dependencies
+$> npm install
+
+# Start the server app
+$> npm start
+```
+
+### Data model:
+
+- `Issue`, `IssueType` and `User` are three separate models (documents).
+- `Issue` has:
+	- `_issueType` (`ObjectId(ref: IssueType)`),
+	- `_owner` (`ObjectId(ref: User)`),
+	- `_assignee` (`ObjectId(ref: User)`),
+	- `Tags` is just a list of string attached to an issue,
+	- `comments` is a list of `Comment` that is a sub model (sub-document),
+	- `updatedOn`: Date that should be updated each time the model is updated (done through a `pre-save hook`. Use a default value corresponding to `Date.now`,
+	- `state`: Just a string that we play with. Used states: `created`, `acknowledged`, `assigned`, `in_progress`, `solved`, `rejected`,
+	- `description`: Free text to describe the issue,
+	- `lat` and `lng`: Coordinates where the issue is located,
+- `User` has:
+	- `firstname`, `lastname` and `phone` that are `String`,
+	- `roles` is a collection of `String` and should contains: `['citizen']`, `['staff']` or `['citizen', 'staff']`
+- `IssueType`
+	- `name` and `description` that are `String`
+- `Comment` has:
+	- `text` is a `String`
+	- `postedOn` is a `Date` when the comment is posted. Use a default value corresponding to `Date.now`
+	- `_author` is the `User` who has posted the comment
+
+### Services:
+
+- `AuthenticationService` is a service that provides methods to help for the authentication (use HTTP header `x-user-id`) and authorizations,
+	- `authenticate` enrich the request object when a user is found that correspond to the id given through the `x-user-id` header, `401` or `403` returned if user not found or no role is present,
+	- `authorize` allow creating a function to do the right check of the rights to apply to a specific path/method
+- `PagingAndSortingService` is a service to help to do the pagination and sorting
+	- `pager` function applied on http verb will populate the request object with `x-pagination` header content or default values if not present,
+	- `sorter` function applied on http verb will populate the request object with `x-sort` header content or default values if not present,
+	- `decorate` function enrich `Mongoose` queries with `limit`, `skip` and `sort` configuration
+
+### Resources:
+
+**Base path is `/api`**
+
+- `Issue /issues`
+	- `GET /` Retrieve all issues (pagination and sort is supported)
+	- `POST /` Create new issue
+	- `POST /search` Allow querying the issues (not yet fully implemented)
+	- `GET /:id` Retrieve one issue
+	- `POST /:id` Update one issue
+	- `DELETE /:id` Delete one issue
+- `User /users`
+	- `GET /` Retrieve all users (pagination and sort is supported)
+	- `POST /` Create new user
+	- `GET /:id` Retrieve a user
+	- `POST /:id` Update a user
+	- `DELETE /:id` Delete a user
+- `IssueType /issueTypes`
+	- `GET /` Retrieve all issue types (pagination and sort is supported)
+	- `POST /` Create new issue type
+	- `GET /:id` Retrieve a issue type
+	- `POST /:id` Update a issue type
+	- `DELETE /:id` Delete a issue type
+- `Action /issues`
+ - `POST /:id/actions` Submit an action to do on an issue. Allowed actions: `comment`, `addTags`, `removeTags`, `replaceTags`, `assign`, `ack`, `start`, `reject` and `resolve`
+- `Data /data`
+	`POST /populate` Populate random data for the app to have something to test for the pagination and sorting
+
+## TODO
+
+- Change the type of `lat` and `lng` for coordinates storage in `Issue`
+- Improve the `query` information part
