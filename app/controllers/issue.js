@@ -6,8 +6,8 @@ var
 	User = mongoose.model('User'),
 	IssueType = mongoose.model('IssueType'),
   Issue = mongoose.model('Issue'),
-	authenticationService = require('../services/auth.js'),
-	pagingAndSortingService = require('../services/PagingAndSorting.js');
+	authenticationService = require('./app/services/auth.js'),
+	pagingAndSortingService = require('./app/services/PagingAndSorting.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
