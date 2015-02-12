@@ -4,7 +4,12 @@ var express = require('express'),
   mongoose = require('mongoose');
 
 global.rootRequire = function(name) {
-    return require(__dirname + '/' + name);
+	if (__dirname.indexOf("app") > -1) {
+		return require(__dirname + '/' + name);
+	}
+	else {
+		return require(__dirname + '/app/' + name)
+	}
 }
 
 mongoose.connect(config.db);
