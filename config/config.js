@@ -21,14 +21,14 @@ var config = {
     db: 'mongodb://localhost/citizen-engagement'
   },
 
-  production: {
-    root: rootPath,
-    app: {
-      name: 'experiments'
-    },
-    port: 3000,
-    db: 'mongodb://localhost/citizen-engagement'
-  }
+	production: {
+   root: rootPath,
+   app: {
+     name: 'experiments'
+   },
+   port: process.env.PORT,
+   db: process.env.MONGODB_CON_STRING
+ }
 };
 
 module.exports = config[env];

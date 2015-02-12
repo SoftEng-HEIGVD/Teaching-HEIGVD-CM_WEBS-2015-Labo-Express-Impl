@@ -93,7 +93,26 @@ $> npm start
 - `Data /data`
 	`POST /populate` Populate random data for the app to have something to test for the pagination and sorting
 
+## Deploy on Heroku
+
+1. Create the application in the Heroku admin console
+2. If not already done, provide Credit Card infos
+3. Type the command in the directory app on your machine `heroku addons:add mongolab`
+4. Visit again your Heroku admin console to view the app details. You will find a link to see the admin console of the addon.
+5. Once you are in the admin console of the addon, you can create a new database user. Do it with the following info:
+	- User: `cityengagement`
+	- Password: `cityengagement`
+6. Retrieve the connection string present on the main page of the admin console from the addon. It should looks like:
+	- Connection string example: `mongodb://{dbuser}:{dbpassword}@{name}.mongolab.com:39271/{addonUser}`
+7. Once user/password defined and connection string retrieved, you can run the following command in your app directory
+	- cmd: `heroku config:set MONGODB_CON_STRING={connectionStringWithValuesReplaced}`
+8. Do the same to setup the `production` environment mode
+	- cmd: `heroku config:set NODE_ENV=production`
+9. Finally, you can push your code to Heroku
+	- cmd: `git push heroku master`
+
 ## TODO
 
 - Change the type of `lat` and `lng` for coordinates storage in `Issue`
 - Improve the `query` information part
+
