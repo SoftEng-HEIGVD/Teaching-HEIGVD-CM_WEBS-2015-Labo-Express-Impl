@@ -4,8 +4,8 @@ var
   router = express.Router(),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
-	authenticationService = require('./app/services/auth.js'),
-	pagingAndSortingService = require('./app/services/PagingAndSorting.js');
+	authenticationService = rootRequire('app/services/auth.js'),
+	pagingAndSortingService = rootRequire('app/services/PagingAndSorting.js');
 
 module.exports = function (app) {
   app.use('/api/users', router);

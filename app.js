@@ -3,6 +3,10 @@ var express = require('express'),
   glob = require('glob'),
   mongoose = require('mongoose');
 
+global.rootRequire = function(name) {
+    return require(__dirname + '/' + name);
+}
+
 mongoose.connect(config.db);
 var db = mongoose.connection;
 db.on('error', function () {
