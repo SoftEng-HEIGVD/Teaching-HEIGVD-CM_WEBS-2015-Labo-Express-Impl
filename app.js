@@ -3,15 +3,6 @@ var express = require('express'),
   glob = require('glob'),
   mongoose = require('mongoose');
 
-global.rootRequire = function(name) {
-	if (__dirname.indexOf("app") > -1) {
-		return require(__dirname + '/' + name);
-	}
-	else {
-		return require(__dirname + '/app/' + name)
-	}
-}
-
 mongoose.connect(config.db);
 var db = mongoose.connection;
 db.on('error', function () {

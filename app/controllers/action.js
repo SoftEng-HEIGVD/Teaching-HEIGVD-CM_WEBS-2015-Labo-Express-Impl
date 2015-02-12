@@ -7,7 +7,7 @@ var
 	IssueType = mongoose.model('IssueType'),
   Issue = mongoose.model('Issue'),
 	Comment = mongoose.model('Comment'),
-	authenticationService = rootRequire('services/auth.js');
+	authenticationService = require('../services/auth.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
