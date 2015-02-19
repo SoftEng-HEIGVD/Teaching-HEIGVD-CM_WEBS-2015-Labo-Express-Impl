@@ -21,4 +21,3 @@ Action.virtual('date')
   });
 
 mongoose.model('Action', Action);
-

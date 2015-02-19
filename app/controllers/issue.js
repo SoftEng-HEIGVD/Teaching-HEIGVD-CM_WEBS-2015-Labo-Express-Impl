@@ -102,7 +102,7 @@ router.route('/')
 	})
 
 	.post(authenticationService.authenticate)
-	.post(authenticationService.authorize([ 'citizen']))
+	.post(authenticationService.authorize([ 'citizen' ]))
 	.post(function (req, res, next) {
 		var issue = new Issue({
 			description: req.body.description,
@@ -114,7 +114,9 @@ router.route('/')
 		});
 
 		issue.save(function(err, issueSaved) {
-			res.status(201).json(convertMongoIssue(issueSaved));
+			Issue.populate(issueSaved, '_issueType', function(err, issuePopulated) {
+				res.status(201).json(convertMongoIssue(issuePopulated));
+			})
 		});
 	});
 
