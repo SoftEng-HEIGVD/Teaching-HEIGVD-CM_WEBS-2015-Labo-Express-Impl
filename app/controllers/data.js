@@ -138,8 +138,6 @@ function updateIssue(issue) {
 	var deferred = q.defer();
 
 	issue.save(function(err, issueSaved) {
-		console.log(err);
-		console.log(issueSaved);
 		deferred.resolve();
 	});
 

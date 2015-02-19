@@ -14,8 +14,6 @@ module.exports = {
 			}
 		}
 
-		console.log(req.pagination);
-
 		next();
 	},
 
