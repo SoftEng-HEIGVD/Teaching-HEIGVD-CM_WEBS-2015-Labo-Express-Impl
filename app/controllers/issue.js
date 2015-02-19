@@ -25,6 +25,16 @@ function convertMongoUser(user) {
 	}
 }
 
+function convertMongoAction(action) {
+	return {
+		id: action.id,
+		type: action.actionType,
+		user: action.user,
+		actionDate: action.actionDate,
+		reason: action.reason
+	}
+}
+
 function convertMongoComment(comment) {
 	if (comment != null) {
 		return {
@@ -63,7 +73,8 @@ function convertMongoIssue(issue) {
 		issueType: convertMongoIssueType(issue._issueType),
 		owner: convertMongoUser(issue._owner),
 		assignee: convertMongoUser(issue._assignee),
-		comments: _.map(issue.comments, function(comment) { return convertMongoComment(comment); })
+		comments: _.map(issue.comments, function(comment) { return convertMongoComment(comment); }),
+		actions: _.map(issue._actions, function(action) { return convertMongoAction(action); })
 	}
 }
 
@@ -72,7 +83,8 @@ function decorate(query) {
 		.populate('_issueType')
 		.populate('_owner')
 		.populate('_assignee')
-		.populate('comments._author');
+		.populate('comments._author')
+		.populate('_actions');
 }
 
 router.route('/')

@@ -34,15 +34,20 @@ module.exports = {
 	 	return function(req, res, next) {
 			if (req.user != undefined) {
 				if (_.isArray(roles)) {
-					return _.intersection(roles, req.user.roles).length > 0;
+					if (_.intersection(roles, req.user.roles).length > 0) {
+						next();
+						return;
+					}
 				}
 				else {
-					return _.contains(req.user.roles, roles);
+					if (_.contains(req.user.roles, roles)) {
+						next();
+						return;
+					}
 				}
 			}
-			else {
-				res.status(403).end();
-			}
+
+			res.status(403).end();
 		};
 	}
 }

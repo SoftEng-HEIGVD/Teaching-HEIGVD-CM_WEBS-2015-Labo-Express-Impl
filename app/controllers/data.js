@@ -1,11 +1,13 @@
 var
 	_ = require('underscore'),
+	q = require('q'),
 	express = require('express'),
   router = express.Router(),
   mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	IssueType = mongoose.model('IssueType'),
   Issue = mongoose.model('Issue'),
+	Action = mongoose.model('Action'),
 	Comment = mongoose.model('Comment');
 
 module.exports = function (app) {
@@ -53,6 +55,18 @@ var issueStates = [
 	'rejected'
 ];
 
+var actionTypes = [
+	'addComment',
+	'addTags',
+	'replaceTags',
+	'removeTags',
+	'assign',
+	'ack',
+	'reject',
+	'start',
+	'resolve'
+];
+
 var people = null;
 var citizen = null;
 var staff = null;
@@ -92,6 +106,46 @@ function generateComments(creationDate) {
 	return data;
 }
 
+function generateActions(creationDate, issue) {
+	var deferred = q.defer();
+
+	var actions = [];
+
+	for (var i = 0; i < randomInt(1, 15); i++) {
+		var user = people[randomInt(0, people.length)];
+
+		var action = new Action({
+			user: user.firstname + ' ' + user.lastname,
+			actionDate: randomDate(creationDate, new Date(2015, 6, 1)),
+			actionType: actionTypes[randomInt(0, actionTypes.length)],
+			reason: descriptionsAndComments[randomInt(0, descriptionsAndComments.length)],
+			_issue: issue
+		});
+
+		actions.push(action);
+	}
+
+	Action.create(actions, function(err) {
+		var actionsCreated = Array.prototype.slice.call(arguments, 1);
+		issue._actions = actionsCreated;
+		deferred.resolve(issue);
+	})
+
+	return deferred.promise;
+}
+
+function updateIssue(issue) {
+	var deferred = q.defer();
+
+	issue.save(function(err, issueSaved) {
+		console.log(err);
+		console.log(issueSaved);
+		deferred.resolve();
+	});
+
+	return deferred.promise;
+}
+
 function populateIssues(res) {
 	var creationDate = randomDate(new Date(2012, 0, 1), new Date(2015, 6, 1));
 
@@ -112,8 +166,37 @@ function populateIssues(res) {
 	}
 
 	Issue.create(data, function(err) {
-		issues = Array.prototype.slice.call(arguments, 1);
-		res.status(200).end();
+		var issues = Array.prototype.slice.call(arguments, 1);
+
+		var actionPromises = [];
+		var issuesUpdated = [];
+		for (var i = 0; i < issues.length; i++) {
+			var actionPromise = generateActions(creationDate, issues[i]);
+
+			actionPromise.then(function(issue) {
+				issuesUpdated.push(issue);
+			});
+
+			actionPromises.push(actionPromise);
+		}
+
+		var issuePromises = [];
+
+		q
+			.all(actionPromises)
+			.then(function(issues) {
+				var issuePromises = [];
+				for (var j = 0; j < issues.length; j++) {
+					issuePromises = updateIssue(issues[j++]);
+				}
+			})
+			.then(
+				q
+					.all(issuePromises)
+					.then(function() {
+						res.status(200).end();
+					})
+			);
 	});
 }
 
@@ -164,10 +247,12 @@ function populatePeople(res) {
 
 router.route('/populate')
 	.post(function(req, res, next) {
-		Issue.find().remove(function(err) {
-			User.find().remove(function(err) {
-				IssueType.find().remove(function(err) {
-					populatePeople(res);
+		Action.find().remove(function(err) {
+			Issue.find().remove(function (err) {
+				User.find().remove(function (err) {
+					IssueType.find().remove(function (err) {
+						populatePeople(res);
+					});
 				});
 			});
 		});

@@ -3,6 +3,7 @@ var
   Schema = mongoose.Schema,
 	CommentSchema = mongoose.model('Comment').schema;
 
+
 var Issue = new Schema({
   description: String,
 	lng: String,
@@ -11,13 +12,14 @@ var Issue = new Schema({
 	tags: [ String ],
 	updatedOn: { type: Date, default: Date.now },
 	comments: [ CommentSchema ],
+	_actions: [ { type: Schema.Types.ObjectId, ref: 'Action' } ],
 	_issueType: { type: Schema.Types.ObjectId, ref: 'IssueType' },
 	_owner: { type: Schema.Types.ObjectId, ref: 'User' },
 	_assignee: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
 Issue.pre('save', function(next) {
-	this.updatedOn = Date.now;
+	this.updatedOn = new Date();
 	next();
 });
 
