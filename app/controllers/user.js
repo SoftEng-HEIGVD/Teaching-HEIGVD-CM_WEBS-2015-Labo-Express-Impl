@@ -4,23 +4,13 @@ var
   router = express.Router(),
   mongoose = require('mongoose'),
   User = mongoose.model('User'),
+	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
 	pagingAndSortingService = require('../services/paging-sorting.js');
 
 module.exports = function (app) {
   app.use('/api/users', router);
 };
-
-function convertMongoUser(user) {
-	//return user.toObject({ transform: true })
-	return {
-		id: user.id,
-		firstname: user.firstname,
-		lastname: user.lastname,
-		phone: user.phone,
-		roles: user.roles
-	}
-}
 
 router.route('/')
 	.get(authenticationService.authenticate)
@@ -34,7 +24,7 @@ router.route('/')
 		.exec(function (err, users) {
 		  if (err) return next(err);
 		  res.json(_.map(users, function(user) {
-				return convertMongoUser(user);
+				return converterService.convertUser(user);
 			}));
 		});
 	})
@@ -48,7 +38,7 @@ router.route('/')
 		});
 
 		user.save(function(err, userSaved) {
-			res.status(201).json(convertMongoUser(userSaved));
+			res.status(201).json(converterService.convertUser(userSaved));
 		});
 	});
 
@@ -56,7 +46,7 @@ router.route('/:id')
 	.get(authenticationService.authenticate)
 	.get(function(req, res, next) {
 		User.findById(req.params.id, function(err, user) {
-			res.json(convertMongoUser(user));
+			res.json(converterService.convertUser(user));
 		});
 	})
 
@@ -70,7 +60,7 @@ router.route('/:id')
 			user.roles = req.body.roles;
 
 			user.save(function(err, userSaved) {
-				res.json(convertMongoUser(userSaved));
+				res.json(converterService.convertUser(userSaved));
 			});
 		});
 	})

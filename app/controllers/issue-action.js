@@ -8,76 +8,12 @@ var
   Issue = mongoose.model('Issue'),
 	Comment = mongoose.model('Comment'),
 	Action = mongoose.model('Action'),
+	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
 };
-
-function convertMongoUser(user) {
-	if (user != null) {
-		return {
-			id: user.id,
-			name: user.firstname + ' ' + user.lastname
-		};
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoAction(action) {
-	return {
-		id: action.id,
-		type: action.actionType,
-		user: action.user,
-		actionDate: action.actionDate,
-		reason: action.reason
-	}
-}
-
-function convertMongoComment(comment) {
-	if (comment != null) {
-		return {
-			id: comment.id,
-			text: comment.text,
-			postedOn: comment.postedOn,
-			author: convertMongoUser(comment._author)
-		}
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoIssueType(issueType) {
-	if (issueType != null) {
-		return {
-			id: issueType.id,
-			name: issueType.name
-		};
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoIssue(issue) {
-	return {
-		id: issue.id,
-		description: issue.description,
-		lat: issue.lat,
-		lng: issue.lng,
-		updatedOn: issue.updatedOn,
-		state: issue.state,
-		tags: issue.tags,
-		issueType: convertMongoIssueType(issue._issueType),
-		owner: convertMongoUser(issue._owner),
-		assignee: convertMongoUser(issue._assignee),
-		comments: _.map(issue.comments, function(comment) { return convertMongoComment(comment); }),
-		actions: _.map(issue._actions, function(action) { return convertMongoAction(action); })
-	}
-}
 
 router.param('id', function(req, res, next, id) {
 	if (id != undefined) {
@@ -103,7 +39,7 @@ function reloadAndConvertIssue(res, issueId) {
 		.populate('_issueType')
 		.populate('comments._author')
 		.exec(function(err, issuePopulated) {
-			res.json(convertMongoIssue(issuePopulated));
+			res.json(converterService.convertIssue(issuePopulated));
 		})
 }
 

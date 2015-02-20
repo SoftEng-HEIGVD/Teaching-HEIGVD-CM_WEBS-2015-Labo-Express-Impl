@@ -6,77 +6,13 @@ var
 	User = mongoose.model('User'),
 	IssueType = mongoose.model('IssueType'),
   Issue = mongoose.model('Issue'),
+	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
 	pagingAndSortingService = require('../services/paging-sorting.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
 };
-
-function convertMongoUser(user) {
-	if (user != null) {
-		return {
-			id: user.id,
-			name: user.firstname + ' ' + user.lastname
-		};
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoAction(action) {
-	return {
-		id: action.id,
-		type: action.actionType,
-		user: action.user,
-		actionDate: action.actionDate,
-		reason: action.reason
-	}
-}
-
-function convertMongoComment(comment) {
-	if (comment != null) {
-		return {
-			id: comment.id,
-			text: comment.text,
-			postedOn: comment.postedOn,
-			author: convertMongoUser(comment._author)
-		}
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoIssueType(issueType) {
-	if (issueType != null) {
-		return {
-			id: issueType.id,
-			name: issueType.name
-		};
-	}
-	else {
-		return null;
-	}
-}
-
-function convertMongoIssue(issue) {
-	return {
-		id: issue.id,
-		description: issue.description,
-		lat: issue.lat,
-		lng: issue.lng,
-		updatedOn: issue.updatedOn,
-		state: issue.state,
-		tags: issue.tags,
-		issueType: convertMongoIssueType(issue._issueType),
-		owner: convertMongoUser(issue._owner),
-		assignee: convertMongoUser(issue._assignee),
-		comments: _.map(issue.comments, function(comment) { return convertMongoComment(comment); }),
-		actions: _.map(issue._actions, function(action) { return convertMongoAction(action); })
-	}
-}
 
 function decorate(query) {
 	return query
@@ -97,7 +33,7 @@ router.route('/')
 		)
 		.exec(function (err, issues) {
 			if (err) return next(err);
-			res.json(_.map(issues, function(issue) { return convertMongoIssue(issue); }));
+			res.json(_.map(issues, function(issue) { return converterService.convertIssue(issue); }));
 		});
 	})
 
@@ -115,7 +51,7 @@ router.route('/')
 
 		issue.save(function(err, issueSaved) {
 			Issue.populate(issueSaved, '_issueType', function(err, issuePopulated) {
-				res.status(201).json(convertMongoIssue(issuePopulated));
+				res.status(201).json(converterService.convertIssue(issuePopulated));
 			})
 		});
 	});
@@ -129,7 +65,7 @@ router.route('/search')
 			req, decorate(Issue.find()).where(req.body)
 		)
 		.exec(function(err, issues) {
-			res.json(_.map(issues, function(issue) { return convertMongoIssue(issue); }));
+			res.json(_.map(issues, function(issue) { return converterService.convertIssue(issue); }));
 		});
 	});
 
@@ -140,7 +76,7 @@ router.route('/:id')
 			Issue.findById(req.params.id)
 		)
 		.exec(function(err, issue) {
-			res.json(convertMongoIssue(issue));
+			res.json(converterService.convertIssue(issue));
 		});
 	})
 
@@ -156,7 +92,7 @@ router.route('/:id')
 			issue.lng = req.body.lng;
 
 			issue.save(function(err, issueSaved) {
-				res.json(convertMongoIssue(issueSaved));
+				res.json(converterService.convertIssue(issueSaved));
 			});
 		});
 	})

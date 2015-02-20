@@ -4,20 +4,13 @@ var
   router = express.Router(),
   mongoose = require('mongoose'),
   IssueType = mongoose.model('IssueType'),
+	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
 	pagingAndSortingService = require('../services/paging-sorting.js');
 
 module.exports = function (app) {
   app.use('/api/issueTypes', router);
 };
-
-function convertMongoIssueType(issueType) {
-	return {
-		id: issueType.id,
-		name: issueType.name,
-		description: issueType.description
-	}
-}
 
 router.route('/')
 	.get(authenticationService.authenticate)
@@ -30,7 +23,7 @@ router.route('/')
 		.exec(function (err, issueTypes) {
 		  if (err) return next(err);
 		  res.json(_.map(issueTypes, function(issueType) {
-				return convertMongoIssueType(issueType);
+				return converterService.convertIssueType(issueType);
 			}));
 		});
 	})
@@ -44,7 +37,7 @@ router.route('/')
 		});
 
 		issueType.save(function(err, issueTypeSaved) {
-			res.status(201).json(convertMongoIssueType(issueTypeSaved));
+			res.status(201).json(converterService.convertIssueType(issueTypeSaved));
 		});
 	});
 
@@ -52,7 +45,7 @@ router.route('/:id')
 	.get(authenticationService.authenticate)
 	.get(function(req, res, next) {
 		IssueType.findById(req.params.id, function(err, issueType) {
-			res.json(convertMongoIssueType(issueType));
+			res.json(converterService.convertIssueType(issueType));
 		});
 	})
 
@@ -64,7 +57,7 @@ router.route('/:id')
 			issueType.description = req.body.description;
 
 			issueType.save(function(err, issueTypeSaved) {
-				res.json(convertMongoIssueType(issueTypeSaved));
+				res.json(converterService.convertIssueType(issueTypeSaved));
 			});
 		});
 	})

@@ -4,23 +4,13 @@ var
   router = express.Router(),
   mongoose = require('mongoose'),
 	Action = mongoose.model('Action'),
+	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
 	pagingAndSortingService = require('../services/paging-sorting.js');
 
 module.exports = function (app) {
   app.use('/api/actions', router);
 };
-
-function convertMongoAction(action) {
-	return {
-		id: action.id,
-		type: action.actionType,
-		user: action.user,
-		issueId: action._issue.id,
-		actionDate: action.actionDate,
-		reason: action.reason
-	}
-}
 
 router.route('/')
 	.get(authenticationService.authenticate)
@@ -34,7 +24,7 @@ router.route('/')
 		.exec(function (err, actions) {
 			if (err) return next(err);
 			res.json(_.map(actions, function(action) {
-				return convertMongoAction(action);
+				return converterService.convertAction(action);
 			}));
 		});
 	});

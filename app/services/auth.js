@@ -3,9 +3,6 @@ var
 	mongoose = require('mongoose'),
 	User = mongoose.model('User');
 
-function authenticate (headerName, req, res, next) {
-}
-
 module.exports = {
 	authenticate: function(req, res, next) {
 		var userId = req.headers['x-user-id'];
