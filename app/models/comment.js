@@ -8,10 +8,5 @@ var Comment = new Schema({
 	_author: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
-Comment.virtual('date')
-  .get(function(){
-    return this._id.getTimestamp();
-  });
-
 mongoose.model('Comment', Comment);
 

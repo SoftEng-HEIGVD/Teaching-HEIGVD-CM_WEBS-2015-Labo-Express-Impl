@@ -15,9 +15,4 @@ Action.pre('save', function(next) {
 	next();
 });
 
-Action.virtual('date')
-  .get(function(){
-    return this._id.getTimestamp();
-  });
-
 mongoose.model('Action', Action);

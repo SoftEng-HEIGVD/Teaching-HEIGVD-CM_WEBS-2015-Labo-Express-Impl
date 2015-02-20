@@ -23,10 +23,4 @@ Issue.pre('save', function(next) {
 	next();
 });
 
-Issue.virtual('date')
-  .get(function(){
-    return this._id.getTimestamp();
-  });
-
 mongoose.model('Issue', Issue);
-

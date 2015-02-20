@@ -22,10 +22,5 @@ var UserSchema = new Schema({
 //	delete ret['__v'];
 //}
 
-UserSchema.virtual('date')
-  .get(function(){
-    return this._id.getTimestamp();
-  });
-
 mongoose.model('User', UserSchema);
 

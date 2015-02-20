@@ -12,11 +12,10 @@ module.exports = {
 
 		if (userId != undefined) {
 			User.findById(userId, function (err, user) {
-				if (err || user == null) {
+				if (err || user === null) {
 					res.status(401).end();
 				}
-
-				if (user.roles.length > 0) {
+				else if (user.roles.length > 0) {
 					req.user = user;
 					next();
 				}

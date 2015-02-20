@@ -6,10 +6,5 @@ var IssueType = new Schema({
   description: String
 });
 
-IssueType.virtual('date')
-  .get(function(){
-    return this._id.getTimestamp();
-  });
-
 mongoose.model('IssueType', IssueType);
 
