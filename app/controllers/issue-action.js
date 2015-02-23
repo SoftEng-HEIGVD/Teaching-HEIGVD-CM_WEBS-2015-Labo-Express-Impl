@@ -37,6 +37,7 @@ function reloadAndConvertIssue(res, issueId) {
 		.populate('_owner')
 		.populate('_assignee')
 		.populate('_issueType')
+		.populate('_actions')
 		.populate('comments._author')
 		.exec(function(err, issuePopulated) {
 			res.json(converterService.convertIssue(issuePopulated));
@@ -92,13 +93,13 @@ function createAndSaveAction(actionType, issue, user, reason, callback) {
 	});
 }
 
-function changeState(actionType, res, user, issue, state, mandatoryComment, optionalComment) {
+function changeState(actionType, res, user, issue, state, mandatoryComment, payload) {
 	issue.state = state;
 	issue.comments.push(new Comment( { text: mandatoryComment, _author: user.id }));
 
 	createAndSaveAction(actionType, issue, user, mandatoryComment, function() {
-		if (optionalComment != undefined) {
-			issue.comments.push(new Comment( { text: optionalComment, _author: user.id }));
+		if (payload !== undefined && payload.comment !== undefined) {
+			issue.comments.push(new Comment( { text: payload.comment, _author: user.id }));
 		}
 
 		issue.save(function (err, issueSaved) {
@@ -127,7 +128,7 @@ var actions = {
 	addTags: function(req, res, next, payload) {
 		req.issue.tags = _.union(req.issue.tags, payload.tags);
 
-		tagComment('addTags', req.user, req.issue, 'Tags added to the issue.', function() {
+		tagAction('addTags', req.user, req.issue, 'Tags added to the issue.', function() {
 			req.issue.save(function(err, issueSaved) {
 				reloadAndConvertIssue(res, issueSaved.id);
 			});
@@ -160,24 +161,24 @@ var actions = {
 	assign: function(req, res, next, payload) {
 		User.findById(payload.assigneeId, function(err, assignee) {
 			req.issue._assignee = assignee.id;
-			changeState('assign', res, req.user, req.issue, 'assigned', 'The issue has been assigned.', payload.comment);
+			changeState('assign', res, req.user, req.issue, 'assigned', 'The issue has been assigned.', payload);
 		});
 	},
 
 	ack: function(req, res, next, payload) {
-		changeState('ack', res, req.user, req.issue, 'acknowledged', 'The staff has received the issue.', payload.comment);
+		changeState('ack', res, req.user, req.issue, 'acknowledged', 'The staff has received the issue.', payload);
 	},
 
 	start: function(req, res, next, payload) {
-		changeState('start', res, req.user, req.issue, 'in_progress', 'The issue is under investigation.', payload.comment);
+		changeState('start', res, req.user, req.issue, 'in_progress', 'The issue is under investigation.', payload);
 	},
 
 	reject: function(req, res, next, payload) {
-		changeState('reject', res, req.user, req.issue, 'rejected', 'It seems there is nothing to do there!', payload.comment);
+		changeState('reject', res, req.user, req.issue, 'rejected', 'It seems there is nothing to do there!', payload);
 	},
 
 	resolve: function(req, res, next, payload) {
-		changeState('resolve', res, req.user, req.issue, 'resolved', 'Yeah! Staff is proud to announce that the issue has been solved!', payload.comment);
+		changeState('resolve', res, req.user, req.issue, 'resolved', 'Yeah! Staff is proud to announce that the issue has been solved!', payload);
 	}
 }
 
