@@ -2,7 +2,7 @@
 
 ## On Heroku
 
-https://pure-gorge-1661.herokuapps.com
+https://pure-gorge-1661.herokuapp.com
 
 ## Introduction
 
