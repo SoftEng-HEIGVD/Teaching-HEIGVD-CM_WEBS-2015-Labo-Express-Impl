@@ -9,7 +9,8 @@ var
 	Comment = mongoose.model('Comment'),
 	Action = mongoose.model('Action'),
 	converterService = require('../services/converter.js'),
-	authenticationService = require('../services/auth.js');
+	authenticationService = require('../services/auth.js'),
+	ifluxService = require('../services/iflux.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
@@ -88,6 +89,7 @@ function createAndSaveAction(actionType, issue, user, reason, callback) {
 	});
 
 	action.save(function(err, actionSaved) {
+		ifluxService.notifyAction(actionSaved, issue);
 		issue._actions.push(actionSaved);
 		callback();
 	});
