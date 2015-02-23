@@ -6,8 +6,8 @@ var
 
 var Issue = new Schema({
   description: String,
-	lng: String,
-	lat: String,
+	lng: Number,
+	lat: Number,
 	state: String,
 	tags: [ String ],
 	updatedOn: { type: Date, default: Date.now },
