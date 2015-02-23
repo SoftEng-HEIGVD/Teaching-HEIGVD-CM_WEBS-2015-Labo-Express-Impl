@@ -92,10 +92,67 @@ $> npm start
 	- `GET /:id` Retrieve a issue type
 	- `POST /:id` Update a issue type
 	- `DELETE /:id` Delete a issue type
-- `Action /issues`
+- `IssueAction /issues`
  - `POST /:id/actions` Submit an action to do on an issue. Allowed actions: `comment`, `addTags`, `removeTags`, `replaceTags`, `assign`, `ack`, `start`, `reject` and `resolve`
+- `Action /actions`
+ - `GET /actions` Retrieve the list of all the actions present in the system
 - `Data /data`
 	`POST /populate` Populate random data for the app to have something to test for the pagination and sorting
+
+## Queries
+
+The queries are partially implemented. There is the list of queries present on the blog:
+
+- `[implemented]` Get the list of issues raised by a particular user.
+
+```json
+{
+	"_owner": "54eb25e13377ec0e007028c1"
+}
+```
+
+- `[implemented]` Get the list of issues of a certain type.
+
+```json
+{
+	"_issueType": "54eb25e13377ec0e007028c1"
+}
+```
+
+- `[implemented]` Get the list of issues in a particular region.
+
+```json
+{
+	"$and": [ {
+			"lat": {
+				"$gte": 46.766129,
+				"$lte": 46.784234
+			}
+		}, {
+			"lng": {
+				"$gte": 6.622009,
+				"$lte": 6.651878
+			}
+		}
+	]
+}
+```
+- [`not implemented`] Get the list of issues solved between two dates.
+- [`not implemented`] Get the list of issues created between two dates that are still unresolved.
+- [`implemented`] Get the history of an issue (list of actions taken on the issue).
+
+```
+# List of actions for a specific issue
+GET /issues/:id/actions
+
+# List of actions for the whole system
+GET /actions
+```
+
+- [`not implemented`] Get the list of users who have created most issues.
+- [`not implemented`] Get the list of users who have solved most issues.
+- [`not implemented`] Get the list of users who have the least assigned issues not yet solved or rejected.
+
 
 ## Deploy on Heroku
 
@@ -117,7 +174,6 @@ $> npm start
 
 ## TODO
 
-- Change the type of `lat` and `lng` for coordinates storage in `Issue`
 - Improve the `query` information part
 
 ### iFlux integration

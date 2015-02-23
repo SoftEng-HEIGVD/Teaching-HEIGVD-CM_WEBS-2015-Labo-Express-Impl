@@ -76,6 +76,10 @@ module.exports = {
 		return convertAction(action, true);
 	},
 
+	convertActionIssue: function(action) {
+		return convertAction(action, false);
+	},
+
 	convertIssue: function(issue) {
 		return {
 			id: issue.id,

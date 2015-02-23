@@ -18,14 +18,17 @@ module.exports = function (app) {
 
 router.param('id', function(req, res, next, id) {
 	if (id != undefined) {
-		Issue.findById(id, function (err, issue) {
-			if (err) {
-				res.status(404).end();
-			}
+		Issue
+			.findById(id)
+			.populate('_actions')
+			.exec(function (err, issue) {
+				if (err) {
+					res.status(404).end();
+				}
 
-			req.issue = issue;
-			next();
-		});
+				req.issue = issue;
+				next();
+			});
 	}
 	else {
 		res.status(404).end();
@@ -185,6 +188,14 @@ var actions = {
 }
 
 router.route('/:id/actions')
+	.get(authenticationService.authenticate)
+	.get(authenticationService.authorize([ 'staff' ]))
+	.get(function(req, res, next) {
+		res.json(_.map(req.issue._actions, function(action) {
+			return converterService.convertActionIssue(action);
+		}));
+	})
+
 	.post(authenticationService.authenticate)
 	.post(authenticationService.authorize([ 'citizen', 'staff' ]))
 	.post(checkActionAuthorizations)
