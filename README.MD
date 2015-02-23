@@ -93,6 +93,7 @@ $> npm start
 	- `POST /:id` Update a issue type
 	- `DELETE /:id` Delete a issue type
 - `IssueAction /issues`
+ - `GET /:id/actions` Retrieve the list of actions for this specific issue
  - `POST /:id/actions` Submit an action to do on an issue. Allowed actions: `comment`, `addTags`, `removeTags`, `replaceTags`, `assign`, `ack`, `start`, `reject` and `resolve`
 - `Action /actions`
  - `GET /actions` Retrieve the list of all the actions present in the system
@@ -106,6 +107,8 @@ The queries are partially implemented. There is the list of queries present on t
 - `[implemented]` Get the list of issues raised by a particular user.
 
 ```json
+POST /issues/:id/search
+
 {
 	"_owner": "54eb25e13377ec0e007028c1"
 }
@@ -114,6 +117,8 @@ The queries are partially implemented. There is the list of queries present on t
 - `[implemented]` Get the list of issues of a certain type.
 
 ```json
+POST /issues/:id/search
+
 {
 	"_issueType": "54eb25e13377ec0e007028c1"
 }
@@ -122,6 +127,8 @@ The queries are partially implemented. There is the list of queries present on t
 - `[implemented]` Get the list of issues in a particular region.
 
 ```json
+POST /issues/:id/search
+
 {
 	"$and": [ {
 			"lat": {
