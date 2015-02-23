@@ -22,5 +22,19 @@ module.exports = {
 				}
 			)
 		);
+	},
+
+	notifyIssue: function(issue, user) {
+		notifyEvent(
+			new ifluxClient.Event(
+				'/sc/issueEvent', {
+					issueId: issue.id,
+					creator: user.firstname + ' ' + user.lastname,
+					description: issue.description,
+					where: '(lat: ' + issue.lat + ', lng: ' + issue.lng + ')',
+					date: new Date()
+				}
+			)
+		);
 	}
 }
