@@ -46,7 +46,7 @@ router.route('/')
 			lng: req.body.lng,
 			state: 'created',
 			_issueType: req.body.issueTypeId,
-			_ownerId: req.user.id
+			_owner: req.user.id
 		});
 
 		issue.save(function(err, issueSaved) {
