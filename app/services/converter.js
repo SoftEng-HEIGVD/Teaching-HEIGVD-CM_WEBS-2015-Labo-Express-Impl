@@ -86,6 +86,7 @@ module.exports = {
 			description: issue.description,
 			lat: issue.lat,
 			lng: issue.lng,
+			createdOn: issue.createdOn,
 			updatedOn: issue.updatedOn,
 			state: issue.state,
 			tags: issue.tags,

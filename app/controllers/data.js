@@ -154,6 +154,7 @@ function populateIssues(res) {
 			lng: random(minLng, maxLng),
 			lat: random(minLat, maxLat),
 			state: issueStates[randomInt(0, issueStates.length)],
+			createdOn: creationDate,
 			updatedOn: creationDate,
 			tags: generateTags(creationDate),
 			comments: generateComments(creationDate),

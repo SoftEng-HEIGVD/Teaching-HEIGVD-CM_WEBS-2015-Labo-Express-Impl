@@ -90,6 +90,7 @@ router.route('/:id')
 			issue.description = req.body.description;
 			issue.lat = req.body.lat;
 			issue.lng = req.body.lng;
+			issue._issueType = req.body.issueTypeId;
 
 			issue.save(function(err, issueSaved) {
 				res.json(converterService.convertIssue(issueSaved));

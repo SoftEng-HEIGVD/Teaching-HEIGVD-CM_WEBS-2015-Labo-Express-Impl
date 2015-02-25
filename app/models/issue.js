@@ -10,6 +10,7 @@ var Issue = new Schema({
 	lat: Number,
 	state: String,
 	tags: [ String ],
+	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	comments: [ CommentSchema ],
 	_actions: [ { type: Schema.Types.ObjectId, ref: 'Action' } ],
