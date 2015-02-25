@@ -46,11 +46,11 @@ router.route('/')
 			lng: req.body.lng,
 			state: 'created',
 			_issueType: req.body.issueTypeId,
-			_owner: req.user.id
+			_owner: req.user
 		});
 
 		issue.save(function(err, issueSaved) {
-			Issue.populate(issueSaved, '_issueType', function(err, issuePopulated) {
+			Issue.populate(issueSaved, '_issueType _owner', function(err, issuePopulated) {
 				res.status(201).json(converterService.convertIssue(issuePopulated));
 			})
 		});
