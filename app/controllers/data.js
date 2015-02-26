@@ -237,8 +237,9 @@ function populatePeople(res) {
 		}
 
 		data.push({
-			firstname: ,
-			lastname: ,
+			firstname: firstname,
+			lastname: lastname,
+			name: name,
 			phone: '+' + randomInt(1000000, 10000000),
 			roles: generateRoles()
 		});

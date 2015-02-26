@@ -45,7 +45,7 @@ router.route('/')
 			.where({ name: (req.body.firstname + ' ' + req.body.lastname).toLowerCase() })
 			.exec(function(err, userFound) {
 
-				if (userFound === null) {
+				if (userFound.length == 0) {
 					var user = createUser(
 						req.body.firstname,
 						req.body.lastname,
@@ -79,7 +79,7 @@ router.route('/:id')
 				.find()
 				.where({ name: (req.body.firstname + ' ' + req.body.lastname).toLowerCase() })
 				.exec(function(err, userFound) {
-					if (userFound === null || (userFound !== null && userFound.id === user.id)) {
+					if (userFound.length == 0 || (userFound.length == 1 && userFound[0].id == user.id)) {
 						user.firstname = req.body.firstname;
 						user.lastname = req.body.lastname;
 						user.name = req.body.firstname + ' ' + req.body.lastname;
@@ -105,7 +105,7 @@ router.route('/:id')
 		});
 	});
 
-router.route('logister')
+router.route('/logister')
 	.post(function(req, res, next) {
 		User
 			.find()
@@ -113,8 +113,8 @@ router.route('logister')
 			.exec(function(err, userFound) {
 				if (err) return next(err);
 
-				if (userFound !== null) {
-					return res.json({ userId: userFound.id }).end();
+				if (userFound.length > 0) {
+					return res.json({ userId: userFound[0].id }).end();
 				}
 				else {
 					var user = createUser(req.body.firstname, req.body.lastname, 'none', [ 'citizen' ]);
