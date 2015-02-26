@@ -63,6 +63,7 @@ function convertIssue(issue, ownerData) {
 		description: issue.description,
 		lat: issue.lat,
 		lng: issue.lng,
+		imageUrl: issue.imageUrl,
 		createdOn: issue.createdOn,
 		updatedOn: issue.updatedOn,
 		state: issue.state,
