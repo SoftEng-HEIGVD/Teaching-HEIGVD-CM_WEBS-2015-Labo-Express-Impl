@@ -26,6 +26,9 @@ function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
+var firstnames = [ 'Alfred', 'Henri', 'Romain', 'Benoit', 'Alain', 'Alex', 'Baptiste', 'Gabriel', 'Valentin', 'Guy', 'Pierre', 'Nico'];
+var lastnames = [ 'Dupont', 'Dutoit', 'Ducroc', 'Desportes', 'Terieur', 'Combes', 'Tartanpion', 'Favre', 'Cornuz', 'Bolomey' ];
+
 var descriptionsAndComments = [
 	'Morbi a odio cursus, finibus lorem ut, pellentesque elit.',
 	'Nunc sollicitudin lorem at dolor placerat, eget ornare erat fringilla.',
@@ -214,14 +217,28 @@ function populateIssueTypes(res) {
 }
 
 function populatePeople(res) {
-	var firstnames = [ 'Alfred', 'Henri', 'Romain', 'Benoit', 'Alain', 'Alex'];
-	var lastnames = [ 'Dupont', 'Dutoit', 'Ducroc', 'Desportes', 'Terieur' ];
-
+	var takenNames = [];
 	var data = [];
 	for (var i = 0; i < 15; i++) {
+		var firstname;
+		var lastname;
+		var name;
+
+		// Make sure each first and last name are unique
+		for (;;) {
+			firstname = firstnames[randomInt(0, firstnames.length)];
+			lastname = lastnames[randomInt(0, lastnames.length)];
+			name = (firstname + ' ' + lastname).toLowerCase();
+
+			if (!_.contains(takenNames, name)) {
+				takenNames.push(name);
+				break;
+			}
+		}
+
 		data.push({
-			firstname: firstnames[randomInt(0, firstnames.length)],
-			lastname: lastnames[randomInt(0, lastnames.length)],
+			firstname: ,
+			lastname: ,
 			phone: '+' + randomInt(1000000, 10000000),
 			roles: generateRoles()
 		});
