@@ -44,6 +44,7 @@ router.route('/')
 			description: req.body.description,
 			lat: req.body.lat,
 			lng: req.body.lng,
+			imageUrl: req.body.imageUrl,
 			state: 'created',
 			_issueType: req.body.issueTypeId,
 			_owner: req.user
@@ -90,6 +91,7 @@ router.route('/:id')
 			issue.description = req.body.description;
 			issue.lat = req.body.lat;
 			issue.lng = req.body.lng;
+			issue.imageUrl = req.body.imageUrl;
 			issue._issueType = req.body.issueTypeId;
 
 			issue.save(function(err, issueSaved) {

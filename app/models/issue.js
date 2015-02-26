@@ -9,6 +9,7 @@ var IssueSchema = new Schema({
 	lng: Number,
 	lat: Number,
 	state: String,
+	imageUrl: String,
 	tags: [ String ],
 	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },

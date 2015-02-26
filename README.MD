@@ -112,6 +112,10 @@ POST /issues/:id/search
 {
 	"_owner": "54eb25e13377ec0e007028c1"
 }
+
+or
+
+GET /me/issues
 ```
 
 - `[implemented]` Get the list of issues of a certain type.
