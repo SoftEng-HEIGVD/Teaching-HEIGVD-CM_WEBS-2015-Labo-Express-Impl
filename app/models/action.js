@@ -2,7 +2,7 @@ var
 	mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-var Action = new Schema({
+var ActionSchema = new Schema({
   user: String,
 	actionDate: { type: Date, default: Date.now},
   actionType: String,
@@ -10,9 +10,9 @@ var Action = new Schema({
   _issue: { type: Schema.Types.ObjectId, ref: 'Issue' }
 });
 
-Action.pre('save', function(next) {
+ActionSchema.pre('save', function(next) {
 	this.actionDate = new Date();
 	next();
 });
 
-mongoose.model('Action', Action);
+mongoose.model('Action', ActionSchema);

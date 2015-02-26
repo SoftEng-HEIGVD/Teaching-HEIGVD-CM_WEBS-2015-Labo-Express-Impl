@@ -4,7 +4,7 @@ var
 	CommentSchema = mongoose.model('Comment').schema;
 
 
-var Issue = new Schema({
+var IssueSchema = new Schema({
   description: String,
 	lng: Number,
 	lat: Number,
@@ -19,9 +19,9 @@ var Issue = new Schema({
 	_assignee: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
-Issue.pre('save', function(next) {
+IssueSchema.pre('save', function(next) {
 	this.updatedOn = new Date();
 	next();
 });
 
-mongoose.model('Issue', Issue);
+mongoose.model('Issue', IssueSchema);
