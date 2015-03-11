@@ -3,7 +3,7 @@ var
 	ifluxClient = require('iflux-node-client');
 
 function notifyEvent(event) {
-	var client = new ifluxClient.Client(config.iflux.url);
+	var client = new ifluxClient.Client(config.iflux.url, 'smartCity/citizenEngagement');
 
 	client.notifyEvent(event);
 }

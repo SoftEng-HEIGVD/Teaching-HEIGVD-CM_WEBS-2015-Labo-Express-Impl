@@ -216,6 +216,7 @@ Slack rule on iFLUX:
 ```json
 {
 	"description": "Send text notification to slack when action occurred.",
+	"reference": "SC-CE-AE-SLACK",
 	"if": {
 		"eventSource": "smartCity/citizenEngagement",
 		"eventType": "actionEvent",
@@ -233,6 +234,7 @@ Metrics rules on iFLUX:
 ```json
 {
 	"description": "Update metrics globally on metrics action target.",
+	"reference": "SC-CE-AE-GLOBAL-METRICS",
 	"if": {
 		"eventSource": "smartCity/citizenEngagement",
 		"eventType": "actionEvent",
@@ -248,6 +250,7 @@ Metrics rules on iFLUX:
 ```json
 {
 	"description": "Update metrics for an issue on metrics action target.",
+	"reference": "SC-CE-AE-ISSUE-METRICS",
 	"if": {
 		"eventSource": "smartCity/citizenEngagement",
 		"eventType": "actionEvent",
@@ -284,6 +287,7 @@ Slack rule on iFLUX:
 ```json
 {
 	"description": "Send text notification to slack on issue creation.",
+	"reference": "SC-CE-IC-SLACK",
 	"if": {
 		"eventSource": "smartCity/citizenEngagement",
 		"eventType": "issueCreated",
@@ -301,6 +305,7 @@ Metrics rule on iFLUX
 ```json
 {
 	"description": "Update metrics globally on issue creation.",
+	"reference": "SC-CE-IC-METRICS",
 	"if": {
 		"eventSource": "smartCity/citizenEngagement",
 		"eventType": "issueCreated",
