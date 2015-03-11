@@ -12,7 +12,7 @@ module.exports = {
 	notifyAction: function(action, issue) {
 		notifyEvent(
 			new ifluxClient.Event(
-				'/sc/actionEvent', {
+				'actionEvent', {
 					type: action.actionType,
 					reason: action.reason,
 					user: action.user,
@@ -27,7 +27,7 @@ module.exports = {
 	notifyIssue: function(issue, user) {
 		notifyEvent(
 			new ifluxClient.Event(
-				'/sc/issueEvent', {
+				'issueCreated', {
 					issueId: issue.id,
 					creator: user.firstname + ' ' + user.lastname,
 					description: issue.description,
