@@ -12,6 +12,16 @@ module.exports = function (app) {
   app.use('/api/users', router);
 };
 
+function createUser(firstname, lastname, phone, roles) {
+	return new User({
+		firstname: firstname,
+		lastname: lastname,
+		name: firstname + ' ' + lastname,
+		phone: phone,
+		roles: roles
+	});
+}
+
 router.route('/')
 	.get(authenticationService.authenticate)
 	.get(authenticationService.authorize(['staff']))
@@ -30,16 +40,27 @@ router.route('/')
 	})
 
 	.post(function (req, res, next) {
-		var user = new User({
-			firstname: req.body.firstname,
-			lastname: req.body.lastname,
-			phone: req.body.phone,
-			roles: req.body.roles
-		});
+		User
+			.find()
+			.where({ name: (req.body.firstname + ' ' + req.body.lastname).toLowerCase() })
+			.exec(function(err, userFound) {
 
-		user.save(function(err, userSaved) {
-			res.status(201).json(converterService.convertUser(userSaved));
-		});
+				if (userFound.length == 0) {
+					var user = createUser(
+						req.body.firstname,
+						req.body.lastname,
+						req.body.phone,
+						req.body.roles
+					);
+
+					user.save(function(err, userSaved) {
+						res.status(201).json(converterService.convertUser(userSaved));
+					});
+				}
+				else {
+					res.status(422).json({ message: 'First and last names already taken.' }).end();
+				}
+			});
 	});
 
 router.route('/:id')
@@ -54,14 +75,25 @@ router.route('/:id')
 	.put(authenticationService.authorize([ 'staff' ]))
 	.put(function(req, res, next) {
 		User.findById(req.params.id, function(err, user) {
-			user.firstname = req.body.firstname;
-			user.lastname = req.body.lastname;
-			user.phone = req.body.phone;
-			user.roles = req.body.roles;
+			User
+				.find()
+				.where({ name: (req.body.firstname + ' ' + req.body.lastname).toLowerCase() })
+				.exec(function(err, userFound) {
+					if (userFound.length == 0 || (userFound.length == 1 && userFound[0].id == user.id)) {
+						user.firstname = req.body.firstname;
+						user.lastname = req.body.lastname;
+						user.name = req.body.firstname + ' ' + req.body.lastname;
+						user.phone = req.body.phone;
+						user.roles = req.body.roles;
 
-			user.save(function(err, userSaved) {
-				res.json(converterService.convertUser(userSaved));
-			});
+						user.save(function(err, userSaved) {
+							res.json(converterService.convertUser(userSaved)).end();
+						});
+					}
+					else {
+						res.status(422).json({ message: 'First and last names already taken.'}).end();
+					}
+				});
 		});
 	})
 
@@ -71,4 +103,27 @@ router.route('/:id')
 		User.findByIdAndRemove(req.params.id, function(err) {
 			res.status(204).end();
 		});
+	});
+
+router.route('/logister')
+	.post(function(req, res, next) {
+		User
+			.find()
+			.where({ name: (req.body.firstname + ' ' + req.body.lastname).toLowerCase() })
+			.exec(function(err, userFound) {
+				if (err) return next(err);
+
+				if (userFound.length > 0) {
+					return res.json({ userId: userFound[0].id }).end();
+				}
+				else {
+					var user = createUser(req.body.firstname, req.body.lastname, 'none', [ 'citizen' ]);
+
+					user.save(function(err, userSaved) {
+						if (err) return next(err);
+
+						return res.json({ userId: userSaved.id }).end();
+					});
+				}
+			});
 	});

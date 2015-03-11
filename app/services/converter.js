@@ -57,6 +57,30 @@ function convertIssueType(issueType) {
 	}
 }
 
+function convertIssue(issue, ownerData) {
+	var issueConverted = {
+		id: issue.id,
+		description: issue.description,
+		lat: issue.lat,
+		lng: issue.lng,
+		imageUrl: issue.imageUrl,
+		createdOn: issue.createdOn,
+		updatedOn: issue.updatedOn,
+		state: issue.state,
+		tags: issue.tags,
+		issueType: convertIssueType(issue._issueType),
+		assignee: convertUserForIssue(issue._assignee),
+		comments: _.map(issue.comments, function(comment) { return convertComment(comment); }),
+		actions: _.map(issue._actions, function(action) { return convertAction(action, false); })
+	}
+
+	if (ownerData) {
+		issueConverted.owner = convertUserForIssue(issue._owner);
+	}
+
+	return issueConverted;
+}
+
 module.exports = {
 	convertUser: function(user) {
 		return {
@@ -81,19 +105,10 @@ module.exports = {
 	},
 
 	convertIssue: function(issue) {
-		return {
-			id: issue.id,
-			description: issue.description,
-			lat: issue.lat,
-			lng: issue.lng,
-			updatedOn: issue.updatedOn,
-			state: issue.state,
-			tags: issue.tags,
-			issueType: convertIssueType(issue._issueType),
-			owner: convertUserForIssue(issue._owner),
-			assignee: convertUserForIssue(issue._assignee),
-			comments: _.map(issue.comments, function(comment) { return convertComment(comment); }),
-			actions: _.map(issue._actions, function(action) { return convertAction(action, false); })
-		}
+		return convertIssue(issue, true);
+	},
+
+	convertUserIssue: function(issue) {
+		return convertIssue(issue, true);
 	}
 }

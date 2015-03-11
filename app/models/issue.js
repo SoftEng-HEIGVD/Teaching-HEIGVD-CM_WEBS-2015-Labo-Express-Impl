@@ -4,12 +4,14 @@ var
 	CommentSchema = mongoose.model('Comment').schema;
 
 
-var Issue = new Schema({
+var IssueSchema = new Schema({
   description: String,
 	lng: Number,
 	lat: Number,
 	state: String,
+	imageUrl: String,
 	tags: [ String ],
+	createdOn: { type: Date, default: Date.now },
 	updatedOn: { type: Date, default: Date.now },
 	comments: [ CommentSchema ],
 	_actions: [ { type: Schema.Types.ObjectId, ref: 'Action' } ],
@@ -18,9 +20,9 @@ var Issue = new Schema({
 	_assignee: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
-Issue.pre('save', function(next) {
+IssueSchema.pre('save', function(next) {
 	this.updatedOn = new Date();
 	next();
 });
 
-mongoose.model('Issue', Issue);
+mongoose.model('Issue', IssueSchema);

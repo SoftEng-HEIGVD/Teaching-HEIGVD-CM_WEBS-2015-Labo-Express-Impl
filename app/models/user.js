@@ -4,10 +4,16 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
   firstname: String,
   lastname: String,
+  name: String,
   phone: String,
 	roles: [ String ]
 });
 
+
+UserSchema.pre('save', function(next) {
+	this.name = this.name.toLowerCase();
+	next();
+});
 
 //if (!UserSchema.options.toObject) UserSchema.options.toObject = {};
 //UserSchema.options.toObject.hide = '';

@@ -45,13 +45,14 @@ router.route('/')
 			description: req.body.description,
 			lat: req.body.lat,
 			lng: req.body.lng,
+			imageUrl: req.body.imageUrl,
 			state: 'created',
 			_issueType: req.body.issueTypeId,
-			_ownerId: req.user.id
+			_owner: req.user
 		});
 
 		issue.save(function(err, issueSaved) {
-			Issue.populate(issueSaved, '_issueType', function(err, issuePopulated) {
+			Issue.populate(issueSaved, '_issueType _owner', function(err, issuePopulated) {
 				ifluxService.notifyIssue(issuePopulated, req.user);
 				res.status(201).json(converterService.convertIssue(issuePopulated));
 			})
@@ -92,6 +93,8 @@ router.route('/:id')
 			issue.description = req.body.description;
 			issue.lat = req.body.lat;
 			issue.lng = req.body.lng;
+			issue.imageUrl = req.body.imageUrl;
+			issue._issueType = req.body.issueTypeId;
 
 			issue.save(function(err, issueSaved) {
 				res.json(converterService.convertIssue(issueSaved));

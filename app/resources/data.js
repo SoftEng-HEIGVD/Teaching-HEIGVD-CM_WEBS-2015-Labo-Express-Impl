@@ -26,6 +26,9 @@ function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
+var firstnames = [ 'Alfred', 'Henri', 'Romain', 'Benoit', 'Alain', 'Alex', 'Baptiste', 'Gabriel', 'Valentin', 'Guy', 'Pierre', 'Nico'];
+var lastnames = [ 'Dupont', 'Dutoit', 'Ducroc', 'Desportes', 'Terieur', 'Combes', 'Tartanpion', 'Favre', 'Cornuz', 'Bolomey' ];
+
 var descriptionsAndComments = [
 	'Morbi a odio cursus, finibus lorem ut, pellentesque elit.',
 	'Nunc sollicitudin lorem at dolor placerat, eget ornare erat fringilla.',
@@ -66,6 +69,30 @@ var actionTypes = [
 	'start',
 	'resolve'
 ];
+
+var issueTypeData = [
+	{ _idx_: 0, name: "broken streetlight", description: "Light is broken"},
+	{ _idx_: 1, name: "dangerous crossroad", description: "Devil road"},
+	{ _idx_: 2, name: "graffiti", description: "Youngs are evil"}
+];
+
+var urls = {
+	0: [
+		'http://cdn2.hubspot.net/hub/372659/file-647474867-jpg/blog-files/lightpole2.jpg?t=1424816062643',
+		'http://seeclickfix.com/files/issue_images/0008/5245/2012-08-01_10.07.37.jpg',
+		'http://www.jolind.com/swenjohncom/Images/Cuba/INFRO2.JPG'
+	],
+	1: [
+		'http://www.downvids.net/video/bestimages/img-dangerous-crossroad-916.jpg',
+		'https://departmentfortransport.files.wordpress.com/2014/02/bb2-vzyimaaw3cx-large.jpg',
+		'http://i.imgur.com/OkwKGNh.jpg'
+	],
+	2: [
+		'http://all-that-is-interesting.com/wordpress/wp-content/uploads/2013/02/Moss-Graffiti-And-Regular-Graffiti.jpg',
+		'http://fc01.deviantart.net/fs70/f/2012/088/0/e/surreal__graffiti_alley_by_darkphoenix36-d4ucmlj.jpg',
+		'http://cdn.wonderfulengineering.com/wp-content/uploads/2014/09/graffiti-wallpaper-8.jpg'
+	]
+}
 
 var people = null;
 var citizen = null;
@@ -149,15 +176,20 @@ function populateIssues(res) {
 
 	var data = [];
 	for (var i = 0; i < 100; i++) {
+		var issueType = issueTypes[randomInt(0, issueTypes.length)];
+		var randUrls = urls[_.where(issueTypeData, { name: issueType.name })[0]._idx_]
+
 		data.push({
 			description: descriptionsAndComments[randomInt(0, descriptionsAndComments.length)],
 			lng: random(minLng, maxLng),
 			lat: random(minLat, maxLat),
 			state: issueStates[randomInt(0, issueStates.length)],
+			imageUrl: randUrls[randomInt(0, randUrls.length)],
+			createdOn: creationDate,
 			updatedOn: creationDate,
 			tags: generateTags(creationDate),
 			comments: generateComments(creationDate),
-			_issueType: issueTypes[randomInt(0, issueTypes.length)].id,
+			_issueType: issueType.id,
 			_owner: citizen[randomInt(0, citizen.length)].id,
 			_assignee: staff[randomInt(0, staff.length)].id
 		});
@@ -199,12 +231,6 @@ function populateIssues(res) {
 }
 
 function populateIssueTypes(res) {
-	var issueTypeData = [
-		{ name: "broken streetlight", description: "Light is broken"},
-		{ name: "dangerous crossroad", description: "Devil road"},
-		{ name: "graffiti", description: "Youngs are evil"}
-	];
-
 	IssueType.create(issueTypeData, function(err) {
 		issueTypes = Array.prototype.slice.call(arguments, 1);
 
@@ -213,14 +239,29 @@ function populateIssueTypes(res) {
 }
 
 function populatePeople(res) {
-	var firstnames = [ 'Alfred', 'Henri', 'Romain', 'Benoit', 'Alain', 'Alex'];
-	var lastnames = [ 'Dupont', 'Dutoit', 'Ducroc', 'Desportes', 'Terieur' ];
-
+	var takenNames = [];
 	var data = [];
 	for (var i = 0; i < 15; i++) {
+		var firstname;
+		var lastname;
+		var name;
+
+		// Make sure each first and last name are unique
+		for (;;) {
+			firstname = firstnames[randomInt(0, firstnames.length)];
+			lastname = lastnames[randomInt(0, lastnames.length)];
+			name = (firstname + ' ' + lastname).toLowerCase();
+
+			if (!_.contains(takenNames, name)) {
+				takenNames.push(name);
+				break;
+			}
+		}
+
 		data.push({
-			firstname: firstnames[randomInt(0, firstnames.length)],
-			lastname: lastnames[randomInt(0, lastnames.length)],
+			firstname: firstname,
+			lastname: lastname,
+			name: name,
 			phone: '+' + randomInt(1000000, 10000000),
 			roles: generateRoles()
 		});

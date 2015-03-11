@@ -123,7 +123,7 @@ var actions = {
 
 		req.issue.comments.push(comment);
 
-		createAndSaveAction('addComment', issue, user, 'Comment added.', function() {
+		createAndSaveAction('addComment', req.issue, req.user, 'Comment added.', function() {
 			req.issue.save(function(err, issueSaved) {
 				reloadAndConvertIssue(res, issueSaved.id);
 			});
