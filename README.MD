@@ -147,6 +147,22 @@ POST /issues/:id/search
 		}
 	]
 }
+
+OR
+
+
+POST /issues/:id/search
+
+{
+	"loc": {
+		"$geoWithin": {
+			"$centerSphere" : [
+				[ 6.622009 , 46.766129 ],
+				0.1
+			]
+		}
+	}
+}
 ```
 - [`not implemented`] Get the list of issues solved between two dates.
 - [`not implemented`] Get the list of issues created between two dates that are still unresolved.
