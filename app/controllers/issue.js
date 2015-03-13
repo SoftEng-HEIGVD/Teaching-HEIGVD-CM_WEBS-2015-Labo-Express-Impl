@@ -38,7 +38,6 @@ router.route('/')
 	})
 
 	.post(authenticationService.authenticate)
-	.post(authenticationService.authorize([ 'citizen' ]))
 	.post(function (req, res, next) {
 		var issue = new Issue({
 			description: req.body.description,
