@@ -273,11 +273,11 @@ This event occurs when a new issue is submitted by a user. Event format:
 	"source": "smartCity/citizenEngagement",
 	"type": "issueEventAdded",
 	"properties": {
-	    "date": "2015-02-23T12:08:20.654Z",
-        "issueId": "54e5d1b4a9c998fec6588d51",
-        "description": "Pellentesque mattis quam tincidunt sem rhoncus finibus.",
-        "creator": "Alain Terrieur",
-        "where": "(lat: 1.2345, lng: 6.7890)"
+		"date": "2015-02-23T12:08:20.654Z",
+		"ok": "54e5d1b4a9c998fec6588d51",
+		"description": "Pellentesque mattis quam tincidunt sem rhoncus finibus.",
+		"creator": "Alain Terrieur",
+		"where": "(lat: 1.2345, lng: 6.7890)"
 	}
 }
 ```
