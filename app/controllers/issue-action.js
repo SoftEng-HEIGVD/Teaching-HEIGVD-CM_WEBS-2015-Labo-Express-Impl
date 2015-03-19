@@ -67,10 +67,22 @@ var STAFF_ACTIONS = [{
 var checkActionAuthorizations = function(req, res, next) {
 	var action = _.find(STAFF_ACTIONS, function(action) { return action.action == req.body.type; });
 
+	// Check if an action is defined
 	if (action != undefined) {
+		// Check if the user doing the request has staff role
 		if (_.contains(req.user.roles, 'staff')) {
-			if (action.assignee) {
+			// Check if the action requires to be assignee
+			if (!action.assignee) {
 				next();
+			}
+			else {
+				// Check if the user is the assignee
+				if (req.issue.assignee.id === req.user.id) {
+					next();
+				}
+				else {
+					res.status(403).end();
+				}
 			}
 		}
 		else {
