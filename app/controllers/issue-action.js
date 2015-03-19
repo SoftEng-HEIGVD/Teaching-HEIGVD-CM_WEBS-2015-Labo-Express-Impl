@@ -19,7 +19,7 @@ router.param('id', function(req, res, next, id) {
 	if (id != undefined) {
 		Issue
 			.findById(id)
-			.populate('_actions')
+			.populate('_actions _assignee')
 			.exec(function (err, issue) {
 				if (err) {
 					res.status(404).end();
