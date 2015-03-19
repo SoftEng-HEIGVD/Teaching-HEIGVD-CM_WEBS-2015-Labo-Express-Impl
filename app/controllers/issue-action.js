@@ -77,7 +77,7 @@ var checkActionAuthorizations = function(req, res, next) {
 			}
 			else {
 				// Check if the user is the assignee
-				if (req.issue.assignee.id === req.user.id) {
+				if (req.issue._assignee.id === req.user.id) {
 					next();
 				}
 				else {
