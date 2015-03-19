@@ -20,7 +20,7 @@ router.param('id', function(req, res, next, id) {
 	if (id != undefined) {
 		Issue
 			.findById(id)
-			.populate('_actions')
+			.populate('_actions _owner _assignee _issueType')
 			.exec(function (err, issue) {
 				if (err) {
 					res.status(404).end();
@@ -68,18 +68,30 @@ var STAFF_ACTIONS = [{
 var checkActionAuthorizations = function(req, res, next) {
 	var action = _.find(STAFF_ACTIONS, function(action) { return action.action == req.body.type; });
 
+	// Check if an action is defined
 	if (action != undefined) {
+		// Check if the user doing the request has staff role
 		if (_.contains(req.user.roles, 'staff')) {
-			if (action.assignee) {
-				next();
+			// Check if the action requires to be assignee
+			if (!action.assignee) {
+				return next();
+			}
+			else {
+				// Check if the user is the assignee
+				if (req.issue._assignee.id === req.user.id) {
+					return next();
+				}
+				else {
+					return res.status(403).end();
+				}
 			}
 		}
 		else {
-			res.status(403).end();
+			return res.status(403).end();
 		}
 	}
 	else {
-		next();
+		return next();
 	}
 };
 
@@ -200,10 +212,12 @@ router.route('/:id/actions')
 	.post(authenticationService.authorize([ 'citizen', 'staff' ]))
 	.post(checkActionAuthorizations)
 	.post(function(req, res, next) {
+		console.log("Action received: %s", req.body.type);
+
 		if (actions[req.body.type] != undefined) {
-			actions[req.body.type](req, res, next, req.body.payload)
+			actions[req.body.type](req, res, next, req.body.payload);
 		}
 		else {
 			res.status(404).end();
 		}
-	})
+	});

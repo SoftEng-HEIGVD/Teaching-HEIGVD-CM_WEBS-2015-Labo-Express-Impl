@@ -71,9 +71,9 @@ var actionTypes = [
 ];
 
 var issueTypeData = [
-	{ _idx_: 0, name: "broken streetlight", description: "Light is broken"},
-	{ _idx_: 1, name: "dangerous crossroad", description: "Devil road"},
-	{ _idx_: 2, name: "graffiti", description: "Youngs are evil"}
+	{ _idx_: 0, code: "bsl", name: "broken streetlight", description: "Light is broken"},
+	{ _idx_: 1, code: "dgr", name: "dangerous crossroad", description: "Devil road"},
+	{ _idx_: 2, code: "grf", name: "graffiti", description: "Youngs are evil"}
 ];
 
 var urls = {
@@ -295,4 +295,15 @@ router.route('/populate')
 				});
 			});
 		});
-	})
+	});
+
+router.route('/drop')
+	.delete(function(req, res, next) {
+		mongoose.connection.db.dropDatabase();
+		res.status(204).end();
+	});
+
+router.route('/ping')
+	.post(function(req, res, next) {
+		res.status(200).json(req.body).end();
+	});

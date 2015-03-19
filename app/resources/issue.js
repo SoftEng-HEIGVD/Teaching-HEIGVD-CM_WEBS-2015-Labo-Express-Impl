@@ -53,9 +53,9 @@ router.route('/')
 
 		issue.save(function(err, issueSaved) {
 			Issue.populate(issueSaved, '_issueType _owner', function(err, issuePopulated) {
-				ifluxService.notifyIssue(issuePopulated, req.user);
+				ifluxService.notifyIssue(issuePopulated);
 				res.status(201).json(converterService.convertIssue(issuePopulated));
-			})
+			});
 		});
 	});
 
