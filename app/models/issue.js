@@ -8,6 +8,7 @@ var IssueSchema = new Schema({
   description: String,
 	lng: Number,
 	lat: Number,
+	loc: [],
 	state: String,
 	imageUrl: String,
 	tags: [ String ],
@@ -20,8 +21,11 @@ var IssueSchema = new Schema({
 	_assignee: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
+IssueSchema.index({ loc: '2d' });
+
 IssueSchema.pre('save', function(next) {
 	this.updatedOn = new Date();
+	this.loc = [this.lng, this.lat];
 	next();
 });
 

@@ -72,7 +72,7 @@ var actionTypes = [
 
 var issueTypeData = [
 	{ _idx_: 0, code: "bsl", name: "broken streetlight", description: "Light is broken"},
-	{ _idx_: 1, code: "dgr", name: "dangerous crossroad", description: "Devil road"},
+	{ _idx_: 1, code: "dcr", name: "dangerous crossroad", description: "Devil road"},
 	{ _idx_: 2, code: "grf", name: "graffiti", description: "Youngs are evil"}
 ];
 

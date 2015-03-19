@@ -147,6 +147,22 @@ POST /issues/:id/search
 		}
 	]
 }
+
+OR
+
+
+POST /issues/:id/search
+
+{
+	"loc": {
+		"$geoWithin": {
+			"$centerSphere" : [
+				[ 6.622009 , 46.766129 ],
+				0.1
+			]
+		}
+	}
+}
 ```
 - [`not implemented`] Get the list of issues solved between two dates.
 - [`not implemented`] Get the list of issues created between two dates that are still unresolved.
@@ -175,7 +191,7 @@ GET /actions
 	- User: `cityengagement`
 	- Password: `cityengagement`
 6. Retrieve the connection string present on the main page of the admin console from the addon. It should looks like:
-	- Connection string example: `mongodb://{dbuser}:{dbpassword}@{name}.mongolab.com:39271/{addonUser}`
+	- Connection string example: `mongodb://{dbuser}:{dbpassword}@{name}.mongolab.com:{dbport}/{addonUser}`
 7. Once user/password defined and connection string retrieved, you can run the following command in your app directory
 	- cmd: `heroku config:set MONGODB_CON_STRING={connectionStringWithValuesReplaced}`
 8. Do the same to setup the `production` environment mode
