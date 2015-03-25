@@ -5,11 +5,11 @@ MAINTAINER Laurent Prevost <laurent.prevost@heig-vd.ch>
 # RUN npm install -g bower
 
 # See: http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/
-ADD code/package.json /tmp/package.json
+ADD package.json /tmp/package.json
 RUN cd /tmp && npm install
 RUN mkdir -p /nodejs/citizen-engagement && cp -a /tmp/node_modules /nodejs/citizen-engagement
 
-ADD code /nodejs/citizen-engagement
+ADD . /nodejs/citizen-engagement
 
 RUN useradd -m -r -U citizen \
 	&& chown -R citizen:citizen /nodejs/citizen-engagement
