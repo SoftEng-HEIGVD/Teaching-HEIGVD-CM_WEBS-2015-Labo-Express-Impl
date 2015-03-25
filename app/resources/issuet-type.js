@@ -32,6 +32,7 @@ router.route('/')
 	.post(authenticationService.authorize([ 'staff' ]))
 	.post(function (req, res, next) {
 		var issueType = new IssueType({
+			code: req.body.code,
 			name: req.body.name,
 			description: req.body.description
 		});
@@ -53,6 +54,7 @@ router.route('/:id')
 	.put(authenticationService.authorize([ 'staff' ]))
 	.put(function(req, res, next) {
 		IssueType.findById(req.params.id, function(err, issueType) {
+			issueType.code = req.body.code;
 			issueType.name = req.body.name;
 			issueType.description = req.body.description;
 
