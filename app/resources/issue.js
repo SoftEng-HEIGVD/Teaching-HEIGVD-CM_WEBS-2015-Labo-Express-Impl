@@ -1,18 +1,18 @@
 var
 	_ = require('underscore'),
 	express = require('express'),
-  router = express.Router(),
-  mongoose = require('mongoose'),
+	router = express.Router(),
+	mongoose = require('mongoose'),
 	User = mongoose.model('User'),
 	IssueType = mongoose.model('IssueType'),
-  Issue = mongoose.model('Issue'),
+	Issue = mongoose.model('Issue'),
 	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
 	pagingAndSortingService = require('../services/paging-sorting.js'),
 	ifluxService = require('../services/iflux.js');
 
 module.exports = function (app) {
-  app.use('/api/issues', router);
+	app.use('/api/issues', router);
 };
 
 function decorate(query) {
@@ -51,6 +51,10 @@ router.route('/')
 		});
 
 		issue.save(function(err, issueSaved) {
+			if (err) {
+				return res.status(400).send(err.message);
+			}
+
 			Issue.populate(issueSaved, '_issueType _owner', function(err, issuePopulated) {
 				ifluxService.notifyIssue(issuePopulated);
 				res.status(201).json(converterService.convertIssue(issuePopulated));

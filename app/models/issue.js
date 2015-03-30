@@ -1,11 +1,11 @@
 var
 	mongoose = require('mongoose'),
-  Schema = mongoose.Schema,
+	Schema = mongoose.Schema,
 	CommentSchema = mongoose.model('Comment').schema;
 
 
 var IssueSchema = new Schema({
-  description: String,
+	description: String,
 	lng: Number,
 	lat: Number,
 	loc: [],
@@ -25,7 +25,9 @@ IssueSchema.index({ loc: '2d' });
 
 IssueSchema.pre('save', function(next) {
 	this.updatedOn = new Date();
-	this.loc = [this.lng, this.lat];
+	if (this.lat && this.lng) {
+		this.loc = [this.lng, this.lat];
+	}
 	next();
 });
 
