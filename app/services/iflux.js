@@ -46,6 +46,10 @@ var changeStateActions = [ 'assign', 'ack', 'start', 'reject', 'resolve' ];
 
 module.exports = {
 	notifyAction: function(action, issue) {
+		if (!config.iflux.enabled) {
+			return
+		}
+
 		var events = [];
 
 		events.push(
@@ -70,6 +74,8 @@ module.exports = {
 	},
 
 	notifyIssue: function(issue) {
-		notifyEvent(new ifluxClient.Event('issueCreated', createIssueEvent(issue)));
+		if (config.iflux.enabled) {
+			notifyEvent(new ifluxClient.Event('issueCreated', createIssueEvent(issue)));
+		}
 	}
 }
