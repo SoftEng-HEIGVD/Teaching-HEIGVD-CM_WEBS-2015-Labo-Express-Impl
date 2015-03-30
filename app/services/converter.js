@@ -49,6 +49,7 @@ function convertIssueType(issueType) {
 	if (issueType != null) {
 		return {
 			id: issueType.id,
+			code: issueType.code,
 			name: issueType.name,
 			description: issueType.description
 		};

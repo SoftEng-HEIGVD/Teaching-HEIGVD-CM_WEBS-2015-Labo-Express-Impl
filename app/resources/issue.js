@@ -8,7 +8,8 @@ var
 	Issue = mongoose.model('Issue'),
 	converterService = require('../services/converter.js'),
 	authenticationService = require('../services/auth.js'),
-	pagingAndSortingService = require('../services/paging-sorting.js');
+	pagingAndSortingService = require('../services/paging-sorting.js'),
+	ifluxService = require('../services/iflux.js');
 
 module.exports = function (app) {
 	app.use('/api/issues', router);
@@ -55,8 +56,9 @@ router.route('/')
 			}
 
 			Issue.populate(issueSaved, '_issueType _owner', function(err, issuePopulated) {
+				ifluxService.notifyIssue(issuePopulated);
 				res.status(201).json(converterService.convertIssue(issuePopulated));
-			})
+			});
 		});
 	});
 

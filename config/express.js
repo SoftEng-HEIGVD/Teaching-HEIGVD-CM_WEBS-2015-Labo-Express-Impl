@@ -12,6 +12,8 @@ module.exports = function(app, config) {
   app.set('views', config.root + '/app/views');
   app.set('view engine', 'jade');
 
+	app.locals.config = config;
+
   // app.use(favicon(config.root + '/public/img/favicon.ico'));
   app.use(logger('dev'));
   app.use(bodyParser.json());
@@ -23,9 +25,14 @@ module.exports = function(app, config) {
   app.use(express.static(config.root + '/public'));
   app.use(methodOverride());
 
-  var controllers = glob.sync(config.root + '/app/controllers/*.js');
-  controllers.forEach(function (controller) {
-    require(controller)(app);
+	var controllers = glob.sync(config.root + '/app/controllers/*.js');
+	controllers.forEach(function (controller) {
+		require(controller)(app);
+	});
+
+  var resources = glob.sync(config.root + '/app/resources/*.js');
+	resources.forEach(function (resource) {
+    require(resource)(app);
   });
 
   app.use(function (req, res, next) {

@@ -9,7 +9,8 @@ var
 	Comment = mongoose.model('Comment'),
 	Action = mongoose.model('Action'),
 	converterService = require('../services/converter.js'),
-	authenticationService = require('../services/auth.js');
+	authenticationService = require('../services/auth.js'),
+	ifluxService = require('../services/iflux.js');
 
 module.exports = function (app) {
   app.use('/api/issues', router);
@@ -19,7 +20,7 @@ router.param('id', function(req, res, next, id) {
 	if (id != undefined) {
 		Issue
 			.findById(id)
-			.populate('_actions _assignee')
+			.populate('_actions _owner _assignee _issueType')
 			.exec(function (err, issue) {
 				if (err) {
 					res.status(404).end();
@@ -73,24 +74,24 @@ var checkActionAuthorizations = function(req, res, next) {
 		if (_.contains(req.user.roles, 'staff')) {
 			// Check if the action requires to be assignee
 			if (!action.assignee) {
-				next();
+				return next();
 			}
 			else {
 				// Check if the user is the assignee
 				if (req.issue._assignee.id === req.user.id) {
-					next();
+					return next();
 				}
 				else {
-					res.status(403).end();
+					return res.status(403).end();
 				}
 			}
 		}
 		else {
-			res.status(403).end();
+			return res.status(403).end();
 		}
 	}
 	else {
-		next();
+		return next();
 	}
 };
 
@@ -103,6 +104,7 @@ function createAndSaveAction(actionType, issue, user, reason, callback) {
 	});
 
 	action.save(function(err, actionSaved) {
+		ifluxService.notifyAction(actionSaved, issue);
 		issue._actions.push(actionSaved);
 		callback();
 	});
@@ -210,10 +212,12 @@ router.route('/:id/actions')
 	.post(authenticationService.authorize([ 'citizen', 'staff' ]))
 	.post(checkActionAuthorizations)
 	.post(function(req, res, next) {
+		console.log("Action received: %s", req.body.type);
+
 		if (actions[req.body.type] != undefined) {
-			actions[req.body.type](req, res, next, req.body.payload)
+			actions[req.body.type](req, res, next, req.body.payload);
 		}
 		else {
 			res.status(404).end();
 		}
-	})
+	});

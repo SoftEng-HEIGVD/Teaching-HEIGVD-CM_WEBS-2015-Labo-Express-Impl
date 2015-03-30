@@ -5,4 +5,4 @@ public/components
 npm-debug.log
 apidoc/raml.json
 apidoc/build
-target/
+.env

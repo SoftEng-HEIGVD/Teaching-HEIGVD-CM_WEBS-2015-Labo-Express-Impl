@@ -295,4 +295,15 @@ router.route('/populate')
 				});
 			});
 		});
-	})
+	});
+
+router.route('/drop')
+	.delete(function(req, res, next) {
+		mongoose.connection.db.dropDatabase();
+		res.status(204).end();
+	});
+
+router.route('/ping')
+	.post(function(req, res, next) {
+		res.status(200).json(req.body).end();
+	});
