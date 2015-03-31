@@ -14,7 +14,7 @@ var config = {
     app: {
       name: 'citizen-engagement'
     },
-    port: 3005,
+    port: 3003,
     db: 'mongodb://localhost/citizen-engagement',
     iflux: {
       url: 'http://localhost:3000',
@@ -27,7 +27,7 @@ var config = {
     app: {
       name: 'citizen-engagement'
     },
-    port: 3005,
+    port: 3003,
     db: 'mongodb://localhost/citizen-engagement',
     iflux: {
       url: 'http://localhost:3000',
@@ -43,7 +43,7 @@ var config = {
     port: process.env.PORT,
     db: process.env.MONGODB_CON_STRING,
     iflux: {
-      url: process.env.IFLUX_SERVER_URL || 'http://www.iflux.io',
+      url: process.env.IFLUX_SERVER_URL || 'https://iflux.herokuapp.com',
 			enabled: false
     }
   },
@@ -56,7 +56,7 @@ var config = {
 		port: 3000,
 		db: 'mongodb://mongo:' + process.env.MONGO_PORT_27017_TCP_PORT + '/' + (process.env.MONGO_DB || 'citizen-engagement-docker'),
 		iflux: {
-  	  url: process.env.IFLUX_SERVER_URL || 'http://www.iflux.io',
+  	  url: process.env.IFLUX_SERVER_URL_INTERNAL || 'https://iflux.herokuapp.com',
 			enabled: true
 	  }
 	}
