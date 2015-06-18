@@ -44,6 +44,7 @@ router.route('/')
 			description: req.body.description,
 			lat: req.body.lat,
 			lng: req.body.lng,
+			zip: req.body.zip,
 			imageUrl: req.body.imageUrl,
 			state: 'created',
 			_issueType: req.body.issueTypeId,
@@ -96,6 +97,7 @@ router.route('/:id')
 			issue.description = req.body.description;
 			issue.lat = req.body.lat;
 			issue.lng = req.body.lng;
+			issue.zip = req.body.zip;
 			issue.imageUrl = req.body.imageUrl;
 			issue._issueType = req.body.issueTypeId;
 

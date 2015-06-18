@@ -2,7 +2,6 @@ var
 	_ = require('underscore'),
 	mongoose = require('mongoose');
 
-
 function convertUserForIssue(user) {
 	if (user != null) {
 		return {
@@ -65,6 +64,7 @@ function convertIssue(issue, ownerData) {
 		description: issue.description,
 		lat: issue.lat,
 		lng: issue.lng,
+		zip: issue.zip,
 		imageUrl: issue.imageUrl,
 		createdOn: issue.createdOn,
 		updatedOn: issue.updatedOn,
@@ -74,7 +74,7 @@ function convertIssue(issue, ownerData) {
 		assignee: convertUserForIssue(issue._assignee),
 		comments: _.map(issue.comments, function(comment) { return convertComment(comment); }),
 		actions: _.map(issue._actions, function(action) { return convertAction(action, false); })
-	}
+	};
 
 	if (ownerData) {
 		issueConverted.owner = convertUserForIssue(issue._owner);
@@ -113,4 +113,4 @@ module.exports = {
 	convertUserIssue: function(issue) {
 		return convertIssue(issue, true);
 	}
-}
+};

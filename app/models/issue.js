@@ -9,6 +9,7 @@ var IssueSchema = new Schema({
 	lng: Number,
 	lat: Number,
 	loc: [],
+	zip: Number,
 	state: String,
 	imageUrl: String,
 	tags: [ String ],

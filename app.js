@@ -1,7 +1,8 @@
 var express = require('express'),
   config = require('./config/config'),
   glob = require('glob'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+	citizenConfigService = require('./app/services/citizenConfigService');
 
 mongoose.connect(config.db);
 var db = mongoose.connection;
@@ -16,6 +17,8 @@ models.forEach(function (model) {
 var app = express();
 
 require('./config/express')(app, config);
+
+citizenConfigService.load();
 
 app.listen(config.port);
 
