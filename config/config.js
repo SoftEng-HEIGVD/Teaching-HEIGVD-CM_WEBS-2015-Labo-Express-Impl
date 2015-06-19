@@ -99,7 +99,7 @@ var config = {
 		db: mongoBaseUri + '-docker',
 		iflux: {
 			url: process.env.COMMON_IFLUX_API_URL,
-			enabled: process.env.CITIZEN_IFLUX_ENABLED
+			enabled: true
 	  }
 	}
 };
