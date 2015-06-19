@@ -11,8 +11,8 @@ module.exports = function (app) {
 
 router.route('/')
 	.post(function (req, res) {
-		if (req.body.actionTargetInstanceId) {
-			citizenConfigService.upsert(req.body.actionTargetInstanceId, req.body.properties);
+		if (req.body.eventSourceInstanceId) {
+			citizenConfigService.upsert(req.body.eventSourceInstanceId, req.body.properties);
 		}
 
 		return res.status(204).end();
