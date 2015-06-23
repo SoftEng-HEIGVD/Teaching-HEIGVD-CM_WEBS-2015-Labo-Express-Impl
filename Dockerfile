@@ -12,7 +12,8 @@ RUN mkdir -p /nodejs/citizen-engagement && cp -a /tmp/node_modules /nodejs/citiz
 ADD . /nodejs/citizen-engagement
 
 RUN useradd -m -r -U citizen -u 1112 \
-	&& chown -R citizen:citizen /nodejs/citizen-engagement
+	&& chown -R citizen:citizen /nodejs/citizen-engagement \
+	&& chown -R citizen:citizen /data/citizen
 
 USER citizen
 
