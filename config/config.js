@@ -76,7 +76,7 @@ var config = {
 	    }
     },
     port: process.env.PORT,
-		db: mongoBaseUri + '-production',
+		db: process.env.MONGOLAB_URI ? mongoBaseUri : mongoBaseUri + '-production',
     iflux: {
 	    url: process.env.COMMON_IFLUX_API_URL,
 			enabled: process.env.CITIZEN_IFLUX_ENABLED
