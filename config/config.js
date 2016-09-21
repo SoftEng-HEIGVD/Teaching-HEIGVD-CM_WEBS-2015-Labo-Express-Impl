@@ -96,7 +96,7 @@ var config = {
 		   }
 		},
 		port: 3000,
-		db: 'mongodb://' + process.env.MONGO_PORT_27017_TCP_ADDR + ':' + process.env.MONGO_PORT_27017_TCP_PORT + '/citizen-engagement-docker',
+		db: 'mongodb://' + process.env.COMPOSE_PROJECT_NAME + '_mongodb:27017/citizen-engagement-docker',
 		iflux: {
 			url: process.env.COMMON_IFLUX_API_URL,
 			enabled: true
